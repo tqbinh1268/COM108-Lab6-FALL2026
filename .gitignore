@@ -13,3 +13,6 @@ run_test*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Private reference documents
+TaiLieu/
