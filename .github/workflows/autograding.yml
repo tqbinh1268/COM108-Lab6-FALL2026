@@ -18,8 +18,8 @@ jobs:
         run: |
           COMMIT_COUNT=$(git rev-list --count HEAD)
           echo "Tổng số commit hiện tại: $COMMIT_COUNT"
-          # Template mặc định có khoảng 3 commit ban đầu, sinh viên được tối đa 13 commit
-          if [ "$COMMIT_COUNT" -gt 16 ]; then
+          # Cho phép commit ban đầu + tối đa 13 commit của sinh viên
+          if [ "$COMMIT_COUNT" -gt 17 ]; then
             echo "::error::QUOTA EXCEEDED! Bạn đã push vượt quá hạn ngạch quy định cho Lab 6 (tối đa 13 lần push: B1-3, B2-3, B3-3, B4-4). Hệ thống đã khóa tự động kiểm thử. Vui lòng liên hệ giảng viên!"
             exit 1
           fi
@@ -30,26 +30,134 @@ jobs:
             echo "::warning::Lưu ý: Commit này bạn chưa cập nhật file LOGBOOK.md! Hãy ghi lại quá trình sửa lỗi để giảng viên kiểm tra."
           fi
 
-      - name: 4. Chạy Unit Test Bài 1 (Bộ lọc làm mịn tín hiệu - Moving Average Filter)
+      - name: 4. Chạy toàn bộ Test & Xuất Báo Cáo Tự Động (GitHub Step Summary)
         run: |
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+
+          # --- CHẠY BÀI 1 ---
           echo "==================== TEST BÀI 1 ===================="
-          gcc -Wall tests/test_bai1.c -o run_test1 -lm
-          ./run_test1
+          if gcc -Wall tests/test_bai1.c -o run_test1 -lm; then
+            if ./run_test1 > test1.log 2>&1; then
+              cat test1.log
+              STATUS1="✅ PASS"
+              PASS1=1
+            else
+              cat test1.log
+              STATUS1="❌ FAILED"
+              PASS1=0
+            fi
+          else
+            echo "Lỗi biên dịch Bài 1" > test1.log
+            STATUS1="❌ LỖI BIÊN DỊCH"
+            PASS1=0
+          fi
 
-      - name: 5. Chạy Unit Test Bài 2 (Nén & giải nén sai phân IoT - Delta Encoding)
-        run: |
+          # --- CHẠY BÀI 2 ---
           echo "==================== TEST BÀI 2 ===================="
-          gcc -Wall tests/test_bai2.c -o run_test2 -lm
-          ./run_test2
+          if gcc -Wall tests/test_bai2.c -o run_test2 -lm; then
+            if ./run_test2 > test2.log 2>&1; then
+              cat test2.log
+              STATUS2="✅ PASS"
+              PASS2=1
+            else
+              cat test2.log
+              STATUS2="❌ FAILED"
+              PASS2=0
+            fi
+          else
+            echo "Lỗi biên dịch Bài 2" > test2.log
+            STATUS2="❌ LỖI BIÊN DỊCH"
+            PASS2=0
+          fi
 
-      - name: 6. Chạy Unit Test Bài 3 (Bộ lọc làm mờ điểm ảnh - Box Blur Filter 3x3)
-        run: |
+          # --- CHẠY BÀI 3 ---
           echo "==================== TEST BÀI 3 ===================="
-          gcc -Wall tests/test_bai3.c -o run_test3 -lm
-          ./run_test3
+          if gcc -Wall tests/test_bai3.c -o run_test3 -lm; then
+            if ./run_test3 > test3.log 2>&1; then
+              cat test3.log
+              STATUS3="✅ PASS"
+              PASS3=1
+            else
+              cat test3.log
+              STATUS3="❌ FAILED"
+              PASS3=0
+            fi
+          else
+            echo "Lỗi biên dịch Bài 3" > test3.log
+            STATUS3="❌ LỖI BIÊN DỊCH"
+            PASS3=0
+          fi
 
-      - name: 7. Chạy Unit Test Bài 4 (Radar dò điểm nóng - Thermal Peak Detection)
-        run: |
+          # --- CHẠY BÀI 4 ---
           echo "==================== TEST BÀI 4 ===================="
-          gcc -Wall tests/test_bai4.c -o run_test4 -lm
-          ./run_test4
+          if gcc -Wall tests/test_bai4.c -o run_test4 -lm; then
+            if ./run_test4 > test4.log 2>&1; then
+              cat test4.log
+              STATUS4="✅ PASS"
+              PASS4=1
+            else
+              cat test4.log
+              STATUS4="❌ FAILED"
+              PASS4=0
+            fi
+          else
+            echo "Lỗi biên dịch Bài 4" > test4.log
+            STATUS4="❌ LỖI BIÊN DỊCH"
+            PASS4=0
+          fi
+
+          # --- TẠO BẢNG TỔNG HỢP GITHUB STEP SUMMARY ---
+          echo "## 📊 BẢNG TỔNG KẾT KẾT QUẢ KIỂM THỬ - LAB 6" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> **Người nộp bài:** \`${{ github.actor }}\` | **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "> **Tiến độ hạn ngạch:** \`$COMMIT_COUNT commit\` (Tối đa 13 lượt nộp)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Bài tập | Nội dung chuyên môn | Trạng thái |" >> $GITHUB_STEP_SUMMARY
+          echo "| :---: | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Bài 1** | Bộ lọc làm mịn tín hiệu (Moving Average Filter) | $STATUS1 |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Bài 2** | Nén sai phân đo đạc IoT (Delta Encoding) | $STATUS2 |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Bài 3** | Bộ lọc làm mờ điểm ảnh (Box Blur Filter 3x3) | $STATUS3 |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Bài 4** | Radar dò điểm nóng (Thermal Peak Detection) | $STATUS4 |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Nếu có bài fail, trích xuất log chi tiết vào khối thu gọn
+          if [ $PASS1 -eq 0 ] || [ $PASS2 -eq 0 ] || [ $PASS3 -eq 0 ] || [ $PASS4 -eq 0 ]; then
+            echo "### 🔍 Chi Tiết Phản Hồi Từ Test Runner (Nhấp để mở xem)" >> $GITHUB_STEP_SUMMARY
+            if [ $PASS1 -eq 0 ]; then
+              echo "<details><summary>❌ <b>Chi tiết kiểm thử Bài 1</b></summary>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```text' >> $GITHUB_STEP_SUMMARY
+              cat test1.log >> $GITHUB_STEP_SUMMARY 2>&1 || true
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "</details>" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ $PASS2 -eq 0 ]; then
+              echo "<details><summary>❌ <b>Chi tiết kiểm thử Bài 2</b></summary>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```text' >> $GITHUB_STEP_SUMMARY
+              cat test2.log >> $GITHUB_STEP_SUMMARY 2>&1 || true
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "</details>" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ $PASS3 -eq 0 ]; then
+              echo "<details><summary>❌ <b>Chi tiết kiểm thử Bài 3</b></summary>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```text' >> $GITHUB_STEP_SUMMARY
+              cat test3.log >> $GITHUB_STEP_SUMMARY 2>&1 || true
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "</details>" >> $GITHUB_STEP_SUMMARY
+            fi
+            if [ $PASS4 -eq 0 ]; then
+              echo "<details><summary>❌ <b>Chi tiết kiểm thử Bài 4</b></summary>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```text' >> $GITHUB_STEP_SUMMARY
+              cat test4.log >> $GITHUB_STEP_SUMMARY 2>&1 || true
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "</details>" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "::error::Một hoặc nhiều bài tập chưa vượt qua test case. Hãy xem Bảng tổng kết để sửa code!"
+            exit 1
+          else
+            echo "### 🎉 CHÚC MỪNG! BẠN ĐÃ VƯỢT QUA 100% CÁC BÀI TEST LAB 6!" >> $GITHUB_STEP_SUMMARY
+          fi

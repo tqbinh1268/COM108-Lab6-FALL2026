@@ -40,22 +40,23 @@ git commit -m "Nop bai 1: Hoan thanh Moving Average Filter"
 git push origin main
 ```
 
-#### Bước 2: Đọc trạng thái phản hồi từ GitHub Actions
-Ngay sau khi push, kiểm tra tab **Actions** trên GitHub cá nhân:
-* 🟡 **Đang chấm:** Đợi 15 – 30 giây.
-* ✅ **Đạt (Pass):** Cập nhật `LOGBOOK.md` thành "Xanh", chuyển sang bài tiếp theo.
-* ❌ **Lỗi (Failed):** Bấm vào ❌ $\rightarrow$ **Details** để đọc test case thất bại $\rightarrow$ Ghi nhận lỗi vào `LOGBOOK.md` $\rightarrow$ Sửa code trên máy rồi push lại.
+#### Bước 2: Đọc bảng tổng hợp tự động trên GitHub Actions (Dashboard)
+Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn $\rightarrow$ bấm vào lần chạy kiểm thử mới nhất:
+* 📊 **Bảng Tổng Kết Tự Động (GitHub Step Summary):** Hiển thị ngay ở trang chủ lần chạy, tổng hợp tình trạng của cả 4 bài tập:
+  * ✅ **PASS:** Bài làm đã vượt qua 100% test case $\rightarrow$ Ghi log "Xanh" $\rightarrow$ Chuyển sang bài tiếp theo.
+  * ❌ **FAILED:** Bấm vào mục **"Chi tiết kiểm thử Bài X"** ngay trên bảng để đọc nguyên nhân lỗi $\rightarrow$ Ghi lỗi vào `LOGBOOK.md` $\rightarrow$ Sửa code trên máy rồi push lại.
+* 📈 **Tiến độ hạn ngạch:** Bảng tổng kết hiển thị trực tiếp số lượt commit đã sử dụng (tối đa 13 lượt).
 
 ---
 
 ### Bảng tra cứu hành động
 
-| Trạng thái | Ý nghĩa | Hành động tiếp theo |
+| Biểu tượng | Trạng thái | Hành động tiếp theo |
 | :---: | --- | --- |
-| 🟡 | **Đang chấm** | Đợi 15 – 30s rồi F5 lại trang. |
-| ✅ | **Pass** | Ghi Log "Xanh" $\rightarrow$ Làm bài tiếp theo. |
-| ❌ | **Failed** | Bấm **Details** đọc lỗi $\rightarrow$ Ghi Log lỗi $\rightarrow$ Sửa code $\rightarrow$ Push lại. |
-| ⛔ | **QUOTA EXCEEDED** | Khóa nộp bài do push quá 12 lần. Báo cáo giảng viên. |
+| 🟡 | **Đang chấm** | Đợi 15 – 30 giây rồi tải lại trang. |
+| ✅ | **PASS** | Ghi nhận vào `LOGBOOK.md` $\rightarrow$ Làm bài tiếp theo. |
+| ❌ | **FAILED** | Mở bảng tóm tắt đọc log lỗi $\rightarrow$ Ghi nhận lỗi vào `LOGBOOK.md` $\rightarrow$ Sửa code $\rightarrow$ Push lại. |
+| ⛔ | **QUOTA EXCEEDED** | Vượt quá 13 lần push. Hệ thống khóa tự động kiểm thử. Liên hệ giảng viên. |
 
 ---
 
