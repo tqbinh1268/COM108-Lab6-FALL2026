@@ -97,9 +97,8 @@ Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn
 > [!IMPORTANT]
 > **TƯ DUY KỶ NGUYÊN AI: SINH VIÊN LÀ TECH LEAD & CODE REVIEWER**  
 > * Bạn **được phép** sử dụng các công cụ AI (ChatGPT, Claude, Cursor, Copilot) để hỗ trợ phân tích và gợi ý code.
-> * Tuy nhiên, các thuật toán trong Lab 6 này được thiết kế với các **bẫy biên thực tế** mà AI thường xuyên sinh mã lỗi (đọc tràn mảng, lỗi chia nguyên, bẫy số âm, sai lệch điều kiện biên).
-> * Bạn **bắt buộc phải đọc hiểu từng dòng code** do AI sinh ra, tự tay sửa chữa và kiểm tra trước khi nộp.
-> * Mỗi lần push, hãy ghi lại câu prompt đã hỏi AI và lỗi mà AI gặp phải vào `LOGBOOK.md`.
+> * Bạn **bắt buộc phải đọc hiểu từng dòng code** do AI sinh ra, tự tay kiểm tra tính đúng đắn và sửa chữa trước khi nộp.
+> * Mỗi lần push, hãy ghi lại câu prompt đã hỏi AI và lỗi phát sinh (nếu có) vào `LOGBOOK.md`.
 
 * **Quy tắc bất biến:**
   * Không thay đổi tên hàm, kiểu dữ liệu trả về và danh sách tham số trong các file mẫu (`src/bai1.c` đến `bai4.c`).
@@ -125,7 +124,7 @@ Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn
   ```c
   void lamMinTinHieu(float raw[], float smooth[], int n);
   ```
-* **Quy tắc xử lý biên (Bẫy AI):**
+* **Quy tắc xử lý biên:**
   * Nếu $n = 1$: `smooth[0] = raw[0]`
   * Với $n \ge 2$:
     * Tại ô đầu mút ($i = 0$): `smooth[0] = (raw[0] + raw[1]) / 2.0f;`
@@ -164,7 +163,7 @@ Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn
   * Với mỗi ô tại tọa độ $(i, j)$: xét cửa sổ $3 \times 3$ gồm các ô $(r, c)$ với $i - 1 \le r \le i + 1$ và $j - 1 \le c \le j + 1$.
   * **Chỉ cộng các ô hợp lệ nằm trong ma trận** ($0 \le r < row$ và $0 \le c < col$).
   * `dest[i][j] = tong_cac_o_hop_le / so_luong_o_hop_le;` (phép chia nguyên).
-* **Bẫy AI:** Các ô ở 4 góc chỉ có 4 ô lân cận hợp lệ, các ô ở mép biên có 6 ô lân cận, các ô ở ruột có 9 ô. AI thường chia cố định cho 9 hoặc truy cập tràn chỉ số ma trận.
+* **Lưu ý kỹ thuật:** Các ô ở 4 góc chỉ có 4 ô lân cận hợp lệ, các ô ở mép biên có 6 ô lân cận, các ô ở ruột có 9 ô (cần đếm chính xác số ô lân cận thực tế để chia trung bình, tránh đọc tràn mảng).
 
 ---
 
@@ -179,4 +178,4 @@ Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn
   * Một ô $(i, j)$ được gọi là Điểm nóng nếu giá trị của nó **LỚN HƠN NGHIÊM NGẶT (`>`)** tất cả các ô lân cận trực tiếp theo 4 hướng (trên, dưới, trái, phải) tồn tại trong ma trận.
   * Nếu ô nằm ở biên hoặc góc thì chỉ so sánh với các ô lân cận thực tế tồn tại.
 * **Nhiệm vụ:** Lưu chỉ số hàng vào `hangPeak[]`, cột vào `cotPeak[]`, nhiệt độ vào `nhietDoPeak[]`. Trả về tổng số lượng điểm nóng tìm thấy.
-* **Bẫy AI:** Nếu ma trận phẳng (tất cả các ô bằng nhau), số lượng điểm nóng phải bằng `0` (vì phải lớn hơn nghiêm ngặt, dấu `>=` sẽ bị test case phạt fail). Xử lý đúng cho cả nhiệt độ âm (kho lạnh).
+* **Lưu ý kỹ thuật:** Nếu ma trận phẳng (tất cả các ô bằng nhau), số lượng điểm nóng phải bằng `0` (phải lớn hơn nghiêm ngặt `>`). Xử lý đúng cho cả trường hợp nhiệt độ âm (kho lạnh).
