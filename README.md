@@ -32,7 +32,35 @@ cd COM108-Lab6-<MaSinhVien>
    # Ví dụ: Tự kiểm thử Bài 1
    gcc -Wall tests/test_bai1.c -o run_test1 -lm && ./run_test1
    ```
-3. Cập nhật ghi chú vào `LOGBOOK.md`.
+3. Cập nhật ghi chú vào `LOGBOOK.md`:
+   * **Khi nộp lần đầu của một bài (Lần 1, 4, 7, 10):**
+     * *Trạng thái:* Ghi `Chờ chấm`.
+     * *Prompt hỏi AI (nếu có):* Dán câu lệnh/prompt đã dùng để hỏi AI (nếu tự viết thì ghi: *"Tự làm không dùng AI"*).
+     * *Lỗi / Cách sửa:* Để trống hoặc ghi *"Chờ phản hồi CI/CD"*.
+   * **Khi nộp sửa lỗi (sau khi CI/CD báo FAILED):**
+     * *Trạng thái:* Ghi `Sửa lỗi lần 2` (hoặc `lần 3`).
+     * *Lỗi phát hiện:* Ghi ngắn gọn lỗi từ bảng Dashboard (VD: *"Rớt Test 2 với n=1 do đọc tràn mảng"*).
+     * *Cách sửa:* Ghi giải pháp đã sửa trong code (VD: *"Bổ sung if (n == 1) smooth[0] = raw[0]"*).
+
+> [!NOTE]
+> **VÍ DỤ MINH HỌA GHI `LOGBOOK.md` ĐẠT CHUẨN:**
+> 
+> *Trường hợp nộp lần đầu (Lần 1 - Bài 1):*
+> ```markdown
+> ### Lần 1: Bài 1 - Bộ Lọc Làm Mịn Tín Hiệu (Moving Average)
+> - Trạng thái: Chờ chấm
+> - Prompt hỏi AI (nếu có): "Viết hàm lọc trung bình trượt cửa sổ k=3 cho mảng float trong C..."
+> - Lỗi phát hiện qua Test (nếu có): Chưa có
+> - Cách sửa / Bài học: Chờ kết quả phản hồi từ GitHub Actions
+> ```
+> 
+> *Trường hợp nộp sửa lỗi (Lần 2 - Bài 1 sau khi bị FAILED):*
+> ```markdown
+> ### Lần 2: Bài 1
+> - Trạng thái: Sửa lỗi lần 2
+> - Lỗi / Cách sửa: FAILED Test 2 do trường hợp biên n=1 bị đọc tràn mảng raw[-1]. Đã sửa bằng cách thêm điều kiện if (n == 1) smooth[0] = raw[0];
+> ```
+
 4. Chạy lệnh nộp bài lên GitHub:
 ```bash
 git add src LOGBOOK.md
