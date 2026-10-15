@@ -7,18 +7,18 @@
 #include "../src/bai1.c"
 
 int main() {
-    printf("[CHAY TEST BAI 1: MAX/MIN CAM BIEN NHIET DO]\n");
+    printf("[CHAY TEST BAI 1: BO LOC LAM MIN TIN HIEU MOVING AVERAGE]\n");
 
-    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm timMaxMin
+    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm lamMinTinHieu
     FILE *f = fopen("src/bai1.c", "r");
     if (f) {
         char line[256];
         int inHam = 0;
         while (fgets(line, sizeof(line), f)) {
             if (strstr(line, "SINH VIÊN VIẾT CODE")) inHam = 1;
-            if (inHam && strstr(line, "printf")) {
-                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong ham timMaxMin!\n");
-                printf("--> YEU CAU: Ham chi tinh toan logic va gan ket qua vao con tro. Lenh in phai nam o main()!\n");
+            if (inHam && strstr(line, "printf(")) {
+                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong ham lamMinTinHieu!\n");
+                printf("--> YEU CAU: Ham chi tinh toan luu vao mang smooth[]. In an phai nam o main()!\n");
                 fclose(f);
                 return 1;
             }
@@ -26,54 +26,51 @@ int main() {
         fclose(f);
     }
 
-    // 2. Test chuẩn: Mảng số dương bình thường
-    float a1[] = {28.5, 32.0, 19.5, 40.2, 25.0};
-    float max1 = 0, min1 = 0;
-    int kq1 = timMaxMin(a1, 5, &max1, &min1);
+    // 2. Test chuẩn: Mảng n = 5
+    float raw1[] = {10.0, 20.0, 30.0, 40.0, 50.0};
+    float smooth1[5] = {0};
+    lamMinTinHieu(raw1, smooth1, 5);
 
-    if (kq1 != 1) {
-        printf("FAILED Test 1: Ham phai tra ve 1 khi mang hop le (n > 0)!\n");
-        return 1;
-    }
-    if (fabs(max1 - 40.2) > 0.001 || fabs(min1 - 19.5) > 0.001) {
-        printf("FAILED Test 1: Ket qua sai voi mang duong -> Expected: Max=40.20, Min=19.50 | Actual: Max=%.2f, Min=%.2f\n", max1, min1);
-        return 1;
+    float exp1[] = {15.0, 20.0, 30.0, 40.0, 45.0};
+    for (int i = 0; i < 5; i++) {
+        if (fabs(smooth1[i] - exp1[i]) > 0.01) {
+            printf("FAILED Test 1 (Chuan n=5): Tai vi tri smooth[%d] -> Expected: %.2f, Actual: %.2f\n",
+                   i, exp1[i], smooth1[i]);
+            return 1;
+        }
     }
 
-    // 3. Test bẫy: Mảng toàn số âm (Bẫy lỗi sinh viên khởi tạo max = 0)
-    float a2[] = {-15.5, -3.2, -40.0, -0.5, -8.0};
-    float max2 = 0, min2 = 0;
-    int kq2 = timMaxMin(a2, 5, &max2, &min2);
-
-    if (kq2 != 1) {
-        printf("FAILED Test 2: Ham phai tra ve 1 khi mang hop le (n > 0)!\n");
-        return 1;
-    }
-    if (fabs(max2 - (-0.5)) > 0.001) {
-        printf("FAILED Test 2: Tim sai Max voi mang so am -> Expected: -0.50, Actual: %.2f\n", max2);
-        printf("--> NGUYEN NHAN PHO BIEN: Khoi tao max = 0 thay vi max = a[0]!\n");
-        return 1;
-    }
-    if (fabs(min2 - (-40.0)) > 0.001) {
-        printf("FAILED Test 2: Tim sai Min voi mang so am -> Expected: -40.00, Actual: %.2f\n", min2);
+    // 3. Test bẫy AI biên: n = 1
+    float raw2[] = {42.0};
+    float smooth2[1] = {0};
+    lamMinTinHieu(raw2, smooth2, 1);
+    if (fabs(smooth2[0] - 42.0) > 0.01) {
+        printf("FAILED Test 2 (Bay AI bien n=1): -> Expected: 42.00, Actual: %.2f\n", smooth2[0]);
+        printf("--> NGUYEN NHAN: AI thuong quen kiem tra truong hop dac biet n = 1 dan den loi doc ngoai mang!\n");
         return 1;
     }
 
-    // 4. Test mảng 1 phần tử
-    float a3[] = {12.5};
-    float max3 = 0, min3 = 0;
-    timMaxMin(a3, 1, &max3, &min3);
-    if (fabs(max3 - 12.5) > 0.001 || fabs(min3 - 12.5) > 0.001) {
-        printf("FAILED Test 3: Mang 1 phan tu -> Expected: Max=12.50, Min=12.50 | Actual: Max=%.2f, Min=%.2f\n", max3, min3);
+    // 4. Test bẫy AI biên: n = 2
+    float raw3[] = {12.0, 28.0};
+    float smooth3[2] = {0};
+    lamMinTinHieu(raw3, smooth3, 2);
+    if (fabs(smooth3[0] - 20.0) > 0.01 || fabs(smooth3[1] - 20.0) > 0.01) {
+        printf("FAILED Test 3 (Bay AI bien n=2): -> Expected: {20.00, 20.00}, Actual: {%.2f, %.2f}\n",
+               smooth3[0], smooth3[1]);
         return 1;
     }
 
-    // 5. Test mảng không hợp lệ (n <= 0)
-    float max4 = 999, min4 = 999;
-    int kq4 = timMaxMin(a1, 0, &max4, &min4);
-    if (kq4 != 0) {
-        printf("FAILED Test 4: Khi n <= 0, ham phai tra ve 0 de bao loi!\n");
-        return 1;
+    // 5. Test mảng có số âm
+    float raw4[] = {-10.0, 5.0, -15.0, 20.0};
+    float smooth4[4] = {0};
+    lamMinTinHieu(raw4, smooth4, 4);
+    float exp4[] = {-2.5, -6.6667, 3.3333, 2.5};
+    for (int i = 0; i < 4; i++) {
+        if (fabs(smooth4[i] - exp4[i]) > 0.01) {
+            printf("FAILED Test 4 (So am): Tai vi tri smooth[%d] -> Expected: %.2f, Actual: %.2f\n",
+                   i, exp4[i], smooth4[i]);
+            return 1;
+        }
     }
 
     printf(">>> BAI 1: PASS 100%% TEST CASES!\n");

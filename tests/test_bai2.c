@@ -1,33 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 
 #define UNIT_TEST
 #include "../src/bai2.c"
 
-int kiemTraMangGiamDan(float a[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        if (a[i] < a[i + 1] - 0.0001) {
-            return 0; // Vi phạm thứ tự giảm dần
-        }
-    }
-    return 1;
-}
-
 int main() {
-    printf("[CHAY TEST BAI 2: SAP XEP GIAM DAN]\n");
+    printf("[CHAY TEST BAI 2: NEN & GIAI NEN SAI PHAN DELTA ENCODING]\n");
 
-    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm sapXepGiamDan
+    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm nenDelta và giaiNenDelta
     FILE *f = fopen("src/bai2.c", "r");
     if (f) {
         char line[256];
         int inHam = 0;
         while (fgets(line, sizeof(line), f)) {
             if (strstr(line, "SINH VIÊN VIẾT CODE")) inHam = 1;
-            if (inHam && strstr(line, "printf")) {
-                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong ham sapXepGiamDan!\n");
-                printf("--> YEU CAU: Ham chi sap xep du lieu trong bo nho. In an phai thuc hien o main()!\n");
+            if (inHam && strstr(line, "printf(")) {
+                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong than ham nen/giai nen!\n");
+                printf("--> YEU CAU: Ham chi thuc hien tinh toan du lieu tren bo nho. In an phai o main()!\n");
                 fclose(f);
                 return 1;
             }
@@ -35,37 +25,67 @@ int main() {
         fclose(f);
     }
 
-    // 2. Test chuẩn: Mảng số dương cần đảo thứ tự
-    float a1[] = {2.5, 9.0, 1.2, 7.8, 5.0};
-    sapXepGiamDan(a1, 5);
-    if (!kiemTraMangGiamDan(a1, 5) || fabs(a1[0] - 9.0) > 0.001 || fabs(a1[4] - 1.2) > 0.001) {
-        printf("FAILED Test 1: Sap xep mang duong that bai!\n");
-        printf("Actual: %.2f, %.2f, %.2f, %.2f, %.2f\n", a1[0], a1[1], a1[2], a1[3], a1[4]);
-        return 1;
+    // 2. Test chuẩn: Chuỗi đo đạc nhiệt độ
+    int goc1[] = {100, 103, 101, 105, 102};
+    int delta1[5] = {0};
+    int khoiPhuc1[5] = {0};
+
+    nenDelta(goc1, delta1, 5);
+    int expDelta1[] = {100, 3, -2, 4, -3};
+    for (int i = 0; i < 5; i++) {
+        if (delta1[i] != expDelta1[i]) {
+            printf("FAILED Test Nen 1: delta[%d] -> Expected: %d, Actual: %d\n", i, expDelta1[i], delta1[i]);
+            return 1;
+        }
     }
 
-    // 3. Test mảng có phần tử trùng nhau
-    float a2[] = {4.0, 8.5, 4.0, 9.2, 8.5};
-    sapXepGiamDan(a2, 5);
-    if (!kiemTraMangGiamDan(a2, 5) || fabs(a2[0] - 9.2) > 0.001 || fabs(a2[4] - 4.0) > 0.001) {
-        printf("FAILED Test 2: Mang co phan tu trung nhau that bai!\n");
-        return 1;
+    giaiNenDelta(delta1, khoiPhuc1, 5);
+    for (int i = 0; i < 5; i++) {
+        if (khoiPhuc1[i] != goc1[i]) {
+            printf("FAILED Test Giai Nen 1: khoiPhuc[%d] -> Expected: %d, Actual: %d\n", i, goc1[i], khoiPhuc1[i]);
+            return 1;
+        }
     }
 
-    // 4. Test mảng có cả số âm và số dương
-    float a3[] = {-3.5, 2.0, -10.0, 0.0, 5.5};
-    sapXepGiamDan(a3, 5);
-    if (!kiemTraMangGiamDan(a3, 5) || fabs(a3[0] - 5.5) > 0.001 || fabs(a3[4] - (-10.0)) > 0.001) {
-        printf("FAILED Test 3: Mang co so am va so 0 that bai!\n");
-        printf("Expected dau: 5.50, cuoi: -10.00 | Actual dau: %.2f, cuoi: %.2f\n", a3[0], a3[4]);
+    // 3. Test mảng hằng số (Delta phải toàn 0 sau phần tử đầu)
+    int goc2[] = {50, 50, 50, 50};
+    int delta2[4] = {0};
+    int khoiPhuc2[4] = {0};
+    nenDelta(goc2, delta2, 4);
+    if (delta2[0] != 50 || delta2[1] != 0 || delta2[2] != 0 || delta2[3] != 0) {
+        printf("FAILED Test Nen 2 (Hang so): Cac gia tri sai phan tiep theo phai bang 0!\n");
         return 1;
+    }
+    giaiNenDelta(delta2, khoiPhuc2, 4);
+    for (int i = 0; i < 4; i++) {
+        if (khoiPhuc2[i] != 50) {
+            printf("FAILED Test Giai Nen 2 (Hang so): Khong khuc phuc duoc gia tri 50 ban dau!\n");
+            return 1;
+        }
+    }
+
+    // 4. Test số âm và mảng biến thiên lớn
+    int goc3[] = {-10, -15, -12, 0, 5};
+    int delta3[5] = {0};
+    int khoiPhuc3[5] = {0};
+    nenDelta(goc3, delta3, 5);
+    giaiNenDelta(delta3, khoiPhuc3, 5);
+    for (int i = 0; i < 5; i++) {
+        if (khoiPhuc3[i] != goc3[i]) {
+            printf("FAILED Test 3 (So am & qua so 0): Khong khop tai vi tri [%d]! Expected: %d, Actual: %d\n",
+                   i, goc3[i], khoiPhuc3[i]);
+            return 1;
+        }
     }
 
     // 5. Test mảng 1 phần tử
-    float a4[] = {100.0};
-    sapXepGiamDan(a4, 1);
-    if (fabs(a4[0] - 100.0) > 0.001) {
-        printf("FAILED Test 4: Mang 1 phan tu bi thay doi gia tri!\n");
+    int goc4[] = {99};
+    int delta4[1] = {0};
+    int khoiPhuc4[1] = {0};
+    nenDelta(goc4, delta4, 1);
+    giaiNenDelta(delta4, khoiPhuc4, 1);
+    if (delta4[0] != 99 || khoiPhuc4[0] != 99) {
+        printf("FAILED Test 4 (Mang 1 phan tu): Loi khi n = 1!\n");
         return 1;
     }
 

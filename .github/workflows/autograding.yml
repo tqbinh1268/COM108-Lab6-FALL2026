@@ -30,25 +30,25 @@ jobs:
             echo "::warning::Lưu ý: Commit này bạn chưa cập nhật file LOGBOOK.md! Hãy ghi lại quá trình sửa lỗi để giảng viên kiểm tra."
           fi
 
-      - name: 4. Chạy Unit Test Bài 1 (Giám sát nhiệt độ cảm biến - Max/Min mảng 1 chiều)
+      - name: 4. Chạy Unit Test Bài 1 (Bộ lọc làm mịn tín hiệu - Moving Average Filter)
         run: |
           echo "==================== TEST BÀI 1 ===================="
           gcc -Wall tests/test_bai1.c -o run_test1 -lm
           ./run_test1
 
-      - name: 5. Chạy Unit Test Bài 2 (Bảng xếp hạng hiệu suất - Sắp xếp giảm dần)
+      - name: 5. Chạy Unit Test Bài 2 (Nén & giải nén sai phân IoT - Delta Encoding)
         run: |
           echo "==================== TEST BÀI 2 ===================="
           gcc -Wall tests/test_bai2.c -o run_test2 -lm
           ./run_test2
 
-      - name: 6. Chạy Unit Test Bài 3 (Khuếch đại điểm ảnh - Ma trận bình phương)
+      - name: 6. Chạy Unit Test Bài 3 (Bộ lọc làm mờ điểm ảnh - Box Blur Filter 3x3)
         run: |
           echo "==================== TEST BÀI 3 ===================="
           gcc -Wall tests/test_bai3.c -o run_test3 -lm
           ./run_test3
 
-      - name: 7. Chạy Unit Test Bài 4 (Rà soát tọa độ bất thường - Lọc số lẻ ma trận)
+      - name: 7. Chạy Unit Test Bài 4 (Radar dò điểm nóng - Thermal Peak Detection)
         run: |
           echo "==================== TEST BÀI 4 ===================="
           gcc -Wall tests/test_bai4.c -o run_test4 -lm

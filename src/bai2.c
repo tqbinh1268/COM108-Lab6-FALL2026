@@ -1,14 +1,15 @@
 #include <stdio.h>
 
 // --- INTERFACE BẮT BUỘC - KHÔNG ĐỔI CHỮ KÝ HÀM ---
-void sapXepGiamDan(float a[], int n);
+void nenDelta(int goc[], int delta[], int n);
+void giaiNenDelta(int delta[], int khoiPhuc[], int n);
 
 #ifndef UNIT_TEST
 int main() {
     int n;
-    float a[100];
+    int goc[100], delta[100], khoiPhuc[100];
 
-    printf("Nhap so luong chi so hieu suat (n > 0): ");
+    printf("Nhap so luong gia tri do dac IoT (n > 0): ");
     scanf("%d", &n);
 
     if (n <= 0) {
@@ -16,33 +17,56 @@ int main() {
         return 0;
     }
 
-    printf("Nhap %d chi so hieu suat:\n", n);
+    printf("Nhap %d gia tri do dac ban dau:\n", n);
     for (int i = 0; i < n; i++) {
-        printf("  Diem a[%d]: ", i);
-        scanf("%f", &a[i]);
+        printf("  goc[%d] = ", i);
+        scanf("%d", &goc[i]);
     }
 
-    printf("\nMang truoc khi sap xep:\n");
+    // 1. Nén dữ liệu
+    nenDelta(goc, delta, n);
+
+    printf("\n--- CHUOI DU LIEU NEN DELTA TRUYEN QUA MANG ---\n");
     for (int i = 0; i < n; i++) {
-        printf("%.2f ", a[i]);
+        if (i == 0) printf("%d ", delta[i]);
+        else printf("%+d ", delta[i]);
     }
     printf("\n");
 
-    sapXepGiamDan(a, n);
+    // 2. Phía máy chủ giải nén
+    giaiNenDelta(delta, khoiPhuc, n);
 
-    printf("\n--- BANG XEP HANG HIEN THI (GIAM DAN) ---\n");
+    printf("\n--- KET QUA GIAI NEN TAI MAY CHU ---\n");
+    int khop = 1;
     for (int i = 0; i < n; i++) {
-        printf("a[%d] = %.2f%s", i, a[i], (i < n - 1) ? ", " : "\n");
+        printf("%d ", khoiPhuc[i]);
+        if (khoiPhuc[i] != goc[i]) khop = 0;
+    }
+    printf("\n");
+
+    if (khop) {
+        printf(">> XAC THUC: Du lieu giai nen KHOP 100%% voi du lieu goc!\n");
+    } else {
+        printf(">> CANH BAO: Du lieu giai nen bi SAI LECH!\n");
     }
 
     return 0;
 }
 #endif
 
-// --- SINH VIÊN VIẾT CODE CỦA HÀM DƯỚI ĐÂY ---
-void sapXepGiamDan(float a[], int n) {
-    // TODO: Sắp xếp các phần tử trong mảng a theo thứ tự GIẢM DẦN (a[0] >= a[1] >= ... >= a[n-1])
-    // Thao tác sắp xếp trực tiếp trên mảng truyền vào (in-place)
-    // LƯU Ý: Tuyệt đối không dùng lệnh in (printf) bên trong hàm này
+// --- SINH VIÊN VIẾT CODE CỦA 2 HÀM DƯỚI ĐÂY ---
+void nenDelta(int goc[], int delta[], int n) {
+    // TODO: Nén mảng goc[] thành mảng sai phân delta[]
+    // - delta[0] = goc[0]
+    // - Với i >= 1: delta[i] = goc[i] - goc[i-1]
+    // LƯU Ý: Không dùng lệnh in ra màn hình bên trong hàm
+    
+}
+
+void giaiNenDelta(int delta[], int khoiPhuc[], int n) {
+    // TODO: Khôi phục mảng gốc từ mảng delta[]
+    // - khoiPhuc[0] = delta[0]
+    // - Với i >= 1: khoiPhuc[i] = khoiPhuc[i-1] + delta[i]
+    // LƯU Ý: Không dùng lệnh in ra màn hình bên trong hàm
     
 }

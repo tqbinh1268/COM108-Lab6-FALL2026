@@ -3,7 +3,7 @@
 #define MAX_COLS 100
 
 // --- INTERFACE BẮT BUỘC - KHÔNG ĐỔI CHỮ KÝ HÀM ---
-void maTranBinhPhuong(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col);
+void lamMoMaTran(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col);
 
 #ifndef UNIT_TEST
 int main() {
@@ -21,7 +21,7 @@ int main() {
         return 0;
     }
 
-    printf("Nhap cac phan tu cua ma tran (%d x %d):\n", row, col);
+    printf("Nhap cac diem anh cua ma tran (%d x %d):\n", row, col);
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             printf("  src[%d][%d] = ", i, j);
@@ -29,12 +29,12 @@ int main() {
         }
     }
 
-    maTranBinhPhuong(src, dest, row, col);
+    lamMoMaTran(src, dest, row, col);
 
-    printf("\nMa tran binh phuong:\n");
+    printf("\n--- MA TRAN ANH DA LAM MO (BOX BLUR 3x3) ---\n");
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            printf("%d ", dest[i][j]);
+            printf("%4d ", dest[i][j]);
         }
         printf("\n");
     }
@@ -44,10 +44,14 @@ int main() {
 #endif
 
 // --- SINH VIÊN VIẾT CODE CỦA HÀM DƯỚI ĐÂY ---
-void maTranBinhPhuong(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col) {
-    // TODO: Tính bình phương từng phần tử của ma trận src và lưu sang ma trận dest
-    // dest[i][j] = src[i][j] * src[i][j]
-    // Giữ nguyên dữ liệu trong ma trận gốc src
-    // LƯU Ý: Tuyệt đối không dùng lệnh in (printf) bên trong hàm này
+void lamMoMaTran(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col) {
+    // TODO: Áp dụng bộ lọc làm mờ Box Blur 3x3 cho ma trận ảnh src lưu sang dest
+    // Với mỗi ô (i, j):
+    //   - Xét các ô lân cận (r, c) trong phạm vi [i-1 .. i+1] và [j-1 .. j+1]
+    //   - CHỈ lấy các ô hợp lệ: 0 <= r < row và 0 <= c < col
+    //   - Tính: dest[i][j] = tong_cac_o_hop_le / so_luong_o_hop_le (phép chia nguyên)
+    // Giữ nguyên ma trận gốc src.
+    // LƯU Ý: Cực kỳ cẩn thận xử lý biên (ô góc có 4 lân cận, ô cạnh có 6 lân cận, ô tâm có 9 lân cận)
+    // Tuyệt đối không dùng lệnh in ra màn hình bên trong hàm này!
     
 }

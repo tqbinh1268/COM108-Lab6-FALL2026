@@ -1,17 +1,17 @@
-# YÊU CẦU LAB 6 - COM108 (CẬP NHẬT 2026)
+# YÊU CẦU LAB 6 - COM108 (PHIÊN BẢN NÂNG CẤP KỶ NGUYÊN AI - 2026)
 
 > [!NOTE] 
 > **Môn học:** Nhập môn Lập trình với C (PRF192 / COM108)  
-> **Chủ đề:** Mảng 1 chiều & Mảng 2 chiều (Ma trận)  
+> **Chủ đề:** Mảng 1 chiều & Mảng 2 chiều (Ma trận) trong Kỹ thuật Thực tế  
 > **Thời lượng:** Thực hiện trong buổi học  
 > **Hình thức nộp bài:** Sử dụng GitHub Template, đẩy mã nguồn (`git push`) và tự động kiểm thử CI/CD.
 
 ---
 
-## PHẦN 1: HƯỚNG DẪN BẮT ĐẦU VÀ NỘP BÀI (QUY TRÌNH MỚI)
+## PHẦN 1: HƯỚNG DẪN BẮT ĐẦU VÀ NỘP BÀI
 
 ### 1. Tải kho bài tập về máy (Clone)
-1. Truy cập vào **đường link Repository** giảng viên cấp: [COM108-Lab6-FALL2026](https://github.com/tqbinh1268/COM108-Lab6-FALL2026).
+1. Truy cập vào **Repository Template**: [COM108-Lab6-FALL2026](https://github.com/tqbinh1268/COM108-Lab6-FALL2026).
 2. Nhấn nút màu xanh **"Use this template"** $\rightarrow$ **"Create a new repository"**.
 3. Thiết lập: **Repository name:** `COM108-Lab6-<MaSinhVien>` | **Visibility:** `Public` $\rightarrow$ Bấm **Create repository**.
 4. Lấy link HTTPS và chạy lệnh Terminal:
@@ -23,31 +23,28 @@ cd COM108-Lab6-<MaSinhVien>
 ### 2. Quy trình làm từng bài & Đẩy lên GitHub (Push)
 
 > [!TIP]
-> Thực hiện tuần tự: **Hoàn thiện Bài 1 $\rightarrow$ Push & Nhận trạng thái $\rightarrow$ Ghi log $\rightarrow$ Xanh mới chuyển sang Bài 2.**
+> **Quy trình chuẩn:** Hoàn thiện Bài 1 $\rightarrow$ Test cục bộ $\rightarrow$ Push & Đọc CI/CD $\rightarrow$ Ghi log $\rightarrow$ Xanh mới chuyển sang Bài tiếp theo.
 
-#### Bước 1: Code và Ghi Log
+#### Bước 1: Code, Kiểm thử Cục bộ và Ghi Log
 1. Viết code hoàn thiện các hàm trong file `.c` (nằm trong thư mục `src/`).
 2. Tự kiểm thử nhanh trên máy cá nhân:
    ```bash
-   # Ví dụ kiểm thử Bài 1
+   # Kiểm thử Bài 1
    gcc -Wall tests/test_bai1.c -o run_test1 -lm && ./run_test1
    ```
 3. Ghi nhật ký vào `LOGBOOK.md` trước khi push.
 4. Chạy lệnh nộp bài:
 ```bash
 git add src LOGBOOK.md
-git commit -m "Nop bai 1: Hoan thanh tim Max Min"
+git commit -m "Nop bai 1: Hoan thanh Moving Average Filter"
 git push origin main
 ```
 
-#### Bước 2: Đọc trạng thái phản hồi từ GitHub
-Ngay sau khi push, tải lại trang GitHub cá nhân:
+#### Bước 2: Đọc trạng thái phản hồi từ GitHub Actions
+Ngay sau khi push, kiểm tra tab **Actions** trên GitHub cá nhân:
 * 🟡 **Đang chấm:** Đợi 15 – 30 giây.
 * ✅ **Đạt (Pass):** Cập nhật `LOGBOOK.md` thành "Xanh", chuyển sang bài tiếp theo.
-* ❌ **Lỗi (Failed):** 
-  1. Bấm vào biểu tượng ❌ $\rightarrow$ **Details** đọc lỗi cụ thể.
-  2. Ghi lỗi vào `LOGBOOK.md`.
-  3. Sửa code trên máy rồi push lại.
+* ❌ **Lỗi (Failed):** Bấm vào ❌ $\rightarrow$ **Details** để đọc test case thất bại $\rightarrow$ Ghi nhận lỗi vào `LOGBOOK.md` $\rightarrow$ Sửa code trên máy rồi push lại.
 
 ---
 
@@ -64,77 +61,90 @@ Ngay sau khi push, tải lại trang GitHub cá nhân:
 
 ## PHẦN 2: NỘI DUNG CHI TIẾT CÁC BÀI TẬP
 
-### Quy tắc làm bài bắt buộc
+### Quy định lập trình trong Kỷ nguyên AI
 
 > [!IMPORTANT]
-> **QUY TẮC BẤT BIẾN:** Tuyệt đối không thay đổi tên hàm, kiểu dữ liệu trả về và danh sách tham số trong các file mẫu (`src/bai1.c`, `bai2.c`, `bai3.c`, `bai4.c`).
+> **TƯ DUY KỶ NGUYÊN AI: SINH VIÊN LÀ TECH LEAD & CODE REVIEWER**  
+> * Bạn **được phép** sử dụng các công cụ AI (ChatGPT, Claude, Cursor, Copilot) để hỗ trợ phân tích và gợi ý code.
+> * Tuy nhiên, các thuật toán trong Lab 6 này được thiết kế với các **bẫy biên thực tế** mà AI thường xuyên sinh mã lỗi (đọc tràn mảng, lỗi chia nguyên, bẫy số âm, sai lệch điều kiện biên).
+> * Bạn **bắt buộc phải đọc hiểu từng dòng code** do AI sinh ra, tự tay sửa chữa và kiểm tra trước khi nộp.
+> * Mỗi lần push, hãy ghi lại câu prompt đã hỏi AI và lỗi mà AI gặp phải vào `LOGBOOK.md`.
 
-* **Quy định lập trình:**
-  * Được phép sử dụng AI (Cursor, Copilot, ChatGPT, Claude...) để hỗ trợ phân tích và viết code.
-  * **Cấm biến toàn cục (`global variables`):** Toàn bộ dữ liệu trao đổi giữa các hàm phải thông qua tham số hoặc giá trị trả về (`return`).
-  * **Tách bạch tính toán và hiển thị:** Mọi thao tác nhập xuất dữ liệu (`printf`, `scanf`) thực hiện tại `main()`. Hàm tính toán logic chỉ nhận mảng/kích thước và trả kết quả.
+* **Quy tắc bất biến:**
+  * Không thay đổi tên hàm, kiểu dữ liệu trả về và danh sách tham số trong các file mẫu (`src/bai1.c` đến `bai4.c`).
+  * **Cấm biến toàn cục (`global variables`):** Toàn bộ dữ liệu trao đổi giữa các hàm phải qua tham số hoặc `return`.
+  * **Tách bạch tính toán và hiển thị:** Mọi thao tác nhập xuất dữ liệu (`printf`, `scanf`) thực hiện tại `main()`. Hàm tính toán logic tuyệt đối không chứa lệnh `printf`.
 
 > [!WARNING]
-> **Hạn ngạch đẩy bài (Luật 12-Push):** Toàn bộ bài Lab 6 được cấp tối đa **12 lần push**.
+> **Hạn ngạch đẩy bài (Luật 12-Push):** Toàn bộ bài Lab 6 được cấp tối đa **12 lần push** (trung bình 3 lần / bài).
 > * **Bài 1:** Tối đa 3 lần push.
 > * **Bài 2:** Tối đa 3 lần push.
 > * **Bài 3:** Tối đa 3 lần push.
 > * **Bài 4:** Tối đa 3 lần push.
-> * *Hệ thống CI/CD sẽ tự động khóa kiểm tra nếu commit vượt quá hạn ngạch quy định.*
-> * *Mỗi lần đẩy bài (`push`) bắt buộc phải ghi nhận vào tệp `LOGBOOK.md`.*
+> * *Hệ thống sẽ tự động khóa kiểm tra nếu vượt quá hạn ngạch.*
 
 ---
 
-## YÊU CẦU LAB 6
+## CHI TIẾT 4 BÀI TẬP LAB 6
 
-#### Bài 1: Module Giám Sát Cảm Biến Nhiệt Độ Trạm Sạc (`src/bai1.c`)
-Một trạm sạc xe điện thông minh trang bị $n$ cảm biến nhiệt độ ($n > 0$) để đo đạc nhiệt độ pin và đầu sạc (độ Celsius, số thực `float`).
-* **Hàm `timMaxMin`:**
+### Bài 1: Bộ Lọc Làm Mịn Tín Hiệu Nhiễu Cảm Biến (`src/bai1.c`)
+* **Bối cảnh:** Cảm biến đo đạc nhiệt độ/dòng điện của trạm sạc gửi về chuỗi tín hiệu `float raw[]` ($n > 0$) nhưng luôn bị giật nhiễu xung do sóng điện từ. Cần tính mảng đã làm mịn `float smooth[]` bằng thuật toán **Trung bình trượt (Moving Average)** cửa sổ kích thước $k=3$.
+* **Interface bắt buộc:**
   ```c
-  int timMaxMin(float a[], int n, float *maxVal, float *minVal);
+  void lamMinTinHieu(float raw[], float smooth[], int n);
   ```
-  * Nhận mảng `a[]` và số lượng phần tử `n`.
-  * Tìm giá trị nhiệt độ cao nhất gán vào `*maxVal`, nhiệt độ thấp nhất gán vào `*minVal`.
-  * Trả về `1` nếu xử lý thành công ($n > 0$), trả về `0` nếu dữ liệu không hợp lệ ($n \le 0$).
-* **Tại hàm `main()`:** Nhập $n$, nhập từng giá trị cảm biến, gọi hàm và in kết quả ra màn hình.
-* **Bẫy kiểm thử:** Hãy cẩn thận khi khởi tạo giá trị ban đầu cho `max` và `min` (tránh bẫy khi toàn bộ nhiệt độ đo được là số âm).
+* **Quy tắc xử lý biên (Bẫy AI):**
+  * Nếu $n = 1$: `smooth[0] = raw[0]`
+  * Với $n \ge 2$:
+    * Tại ô đầu mút ($i = 0$): `smooth[0] = (raw[0] + raw[1]) / 2.0f;`
+    * Tại ô cuối ($i = n - 1$): `smooth[n - 1] = (raw[n - 2] + raw[n - 1]) / 2.0f;`
+    * Tại các ô giữa ($1 \le i \le n - 2$): `smooth[i] = (raw[i - 1] + raw[i] + raw[i + 1]) / 3.0f;`
+* **Lưu ý:** Tuyệt đối không đọc tràn mảng ngoài chỉ số $[0 .. n-1]$ (như `raw[-1]` hay `raw[n]`).
 
-#### Bài 2: Hệ Thống Bảng Xếp Hạng Hiệu Suất Vận Hành Giảm Dần (`src/bai2.c`)
-Hệ thống quản lý cần sắp xếp bảng điểm đánh giá hiệu suất của $n$ thiết bị trạm sạc theo thứ tự ưu tiên từ cao xuống thấp (giảm dần).
-* **Hàm `sapXepGiamDan`:**
+---
+
+### Bài 2: Nén & Giải Nén Sai Phân Dữ Liệu IoT (`src/bai2.c`)
+* **Bối cảnh:** Để tiết kiệm băng thông truyền tin qua mạng viễn thông 4G/LoRa, thiết bị IoT không gửi chuỗi số nguyên đo đạc ban đầu `goc[]` ($n > 0$), mà chỉ gửi giá trị đầu tiên kèm mảng sai phân `delta[]` biểu diễn độ tăng giảm. Phía máy chủ sẽ thực hiện giải nén khôi phục lại dữ liệu gốc.
+* **Interface bắt buộc:**
   ```c
-  void sapXepGiamDan(float a[], int n);
+  void nenDelta(int goc[], int delta[], int n);
+  void giaiNenDelta(int delta[], int khoiPhuc[], int n);
   ```
-  * Nhận mảng số thực `a[]` gồm `n` phần tử.
-  * Sắp xếp các phần tử trực tiếp trên mảng sao cho $a[0] \ge a[1] \ge \dots \ge a[n-1]$ (dùng thuật toán Hoán đổi trực tiếp, Nổi bọt hoặc Chọn).
-* **Tại hàm `main()`:** Nhập $n$, nhập mảng, gọi hàm sắp xếp và in mảng sau khi sắp xếp theo định dạng: `a[0] = [gia tri], a[1] = [gia tri], ...`
-* **Lưu ý:** Tuyệt đối không dùng lệnh in (`printf`) bên trong hàm `sapXepGiamDan`.
+* **Quy tắc thuật toán:**
+  * **Hàm nén:**
+    * `delta[0] = goc[0];`
+    * Với $i \ge 1$: `delta[i] = goc[i] - goc[i - 1];`
+  * **Hàm giải nén:**
+    * `khoiPhuc[0] = delta[0];`
+    * Với $i \ge 1$: `khoiPhuc[i] = khoiPhuc[i - 1] + delta[i];`
+* **Xác thực:** Chuỗi sau giải nén phải khớp 100% từng giá trị với chuỗi ban đầu.
 
-#### Bài 3: Khuếch Đại Ma Trận Điểm Ảnh Cảm Biến Quang Học (`src/bai3.c`)
-Hệ thống camera quét bề mặt ghi nhận lưới cảm biến quang học 2 chiều kích thước $row \times col$ ($row > 0, col > 0, \le 100$). Để tăng độ tương phản chi tiết, cần tính ma trận bình phương của từng điểm ảnh.
-* **Hàm `maTranBinhPhuong`:**
+---
+
+### Bài 3: Bộ Lọc Làm Mờ Điểm Ảnh Số (Box Blur Filter 3x3) (`src/bai3.c`)
+* **Bối cảnh:** Lưới cảm biến quang học 2 chiều ghi nhận ma trận điểm ảnh $row \times col$ (`int src[][MAX_COLS]`). Để loại bỏ vết nhiễu hạt, ta áp dụng bộ lọc làm mờ ảnh (Box Blur 3x3) - nguyên lý nền tảng của kỹ thuật Tích chập (Convolution) trong Computer Vision.
+* **Interface bắt buộc:**
   ```c
-  void maTranBinhPhuong(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col);
+  #define MAX_COLS 100
+  void lamMoMaTran(int src[][MAX_COLS], int dest[][MAX_COLS], int row, int col);
   ```
-  * Duyệt qua 2 chiều ma trận nguồn `src`, tính bình phương từng phần tử ($src[i][j]^2$) và lưu sang ma trận đích `dest`.
-  * Giữ nguyên dữ liệu của ma trận nguồn `src`.
-* **Tại hàm `main()`:** Nhập kích thước $row \times col$, nhập ma trận, gọi hàm và in ma trận kết quả dạng lưới (mỗi hàng trên một dòng, các phần tử cách nhau bởi dấu cách).
+* **Quy tắc thuật toán:**
+  * Với mỗi ô tại tọa độ $(i, j)$: xét cửa sổ $3 \times 3$ gồm các ô $(r, c)$ với $i - 1 \le r \le i + 1$ và $j - 1 \le c \le j + 1$.
+  * **Chỉ cộng các ô hợp lệ nằm trong ma trận** ($0 \le r < row$ và $0 \le c < col$).
+  * `dest[i][j] = tong_cac_o_hop_le / so_luong_o_hop_le;` (phép chia nguyên).
+* **Bẫy AI:** Các ô ở 4 góc chỉ có 4 ô lân cận hợp lệ, các ô ở mép biên có 6 ô lân cận, các ô ở ruột có 9 ô. AI thường chia cố định cho 9 hoặc truy cập tràn chỉ số ma trận.
 
-#### Bài 4: Rà Soát Tọa Độ Điểm Bất Thường Trên Lưới Cảm Biến (`src/bai4.c`)
-Để phát hiện sớm các xung điện bất thường trên lưới cảm biến kích thước $row \times col$, module giám sát cần quét và trích xuất tất cả các ô có giá trị là **số lẻ**.
-* **Hàm `locSoLeMaTran`:**
+---
+
+### Bài 4: Radar Dò Điểm Nóng Quá Nhiệt (Thermal Peak Detection) (`src/bai4.c`)
+* **Bối cảnh:** Hệ thống radar giám sát nhiệt độ của khối pin lithium theo lưới ma trận $row \times col$ (`int a[][MAX_COLS]`). Cần xác định chính xác các **"Điểm nóng bất thường (Peak)"** có nguy cơ phát hỏa.
+* **Interface bắt buộc:**
   ```c
-  int locSoLeMaTran(int a[][MAX_COLS], int row, int col, int hangLe[], int cotLe[], int giaTriLe[]);
+  #define MAX_COLS 100
+  int doDiemNong(int a[][MAX_COLS], int row, int col, int hangPeak[], int cotPeak[], int nhietDoPeak[]);
   ```
-  * Duyệt ma trận `a` theo từng hàng và cột.
-  * Khi phát hiện phần tử lẻ (chú ý: xử lý đúng cho cả số lẻ âm), ghi chỉ số hàng vào `hangLe[]`, chỉ số cột vào `cotLe[]`, và giá trị vào `giaTriLe[]`.
-  * Trả về tổng số lượng phần tử lẻ tìm thấy.
-* **Tại hàm `main()`:** 
-  * Nếu không có phần tử lẻ nào: In `Khong co phan tu le trong ma tran.`
-  * Nếu có: In danh sách theo đúng mẫu chuẩn:
-    ```
-    Phan tu le tai a[1][2] = 5
-    ```
-
-> [!CAUTION]
-> **Lưu ý kỹ thuật cho Bài 4:** Trong ngôn ngữ C, `-3 % 2` bằng `-1`. Do đó, điều kiện kiểm tra số lẻ phải là `a[i][j] % 2 != 0` thay vì `a[i][j] % 2 == 1` để không bị bỏ sót các số lẻ mang giá trị âm!
+* **Định nghĩa Điểm nóng (Peak):**
+  * Một ô $(i, j)$ được gọi là Điểm nóng nếu giá trị của nó **LỚN HƠN NGHIÊM NGẶT (`>`)** tất cả các ô lân cận trực tiếp theo 4 hướng (trên, dưới, trái, phải) tồn tại trong ma trận.
+  * Nếu ô nằm ở biên hoặc góc thì chỉ so sánh với các ô lân cận thực tế tồn tại.
+* **Nhiệm vụ:** Lưu chỉ số hàng vào `hangPeak[]`, cột vào `cotPeak[]`, nhiệt độ vào `nhietDoPeak[]`. Trả về tổng số lượng điểm nóng tìm thấy.
+* **Bẫy AI:** Nếu ma trận phẳng (tất cả các ô bằng nhau), số lượng điểm nóng phải bằng `0` (vì phải lớn hơn nghiêm ngặt, dấu `>=` sẽ bị test case phạt fail). Xử lý đúng cho cả nhiệt độ âm (kho lạnh).

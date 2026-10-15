@@ -6,18 +6,18 @@
 #include "../src/bai3.c"
 
 int main() {
-    printf("[CHAY TEST BAI 3: MA TRAN BINH PHUONG]\n");
+    printf("[CHAY TEST BAI 3: BO LOC LAM MO DIEM ANH BOX BLUR 3x3]\n");
 
-    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm maTranBinhPhuong
+    // 1. Kiểm tra kiến trúc: Cấm dùng printf trong hàm lamMoMaTran
     FILE *f = fopen("src/bai3.c", "r");
     if (f) {
         char line[256];
         int inHam = 0;
         while (fgets(line, sizeof(line), f)) {
             if (strstr(line, "SINH VIÊN VIẾT CODE")) inHam = 1;
-            if (inHam && strstr(line, "printf")) {
-                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong ham maTranBinhPhuong!\n");
-                printf("--> YEU CAU: Ham chi tinh toan luu ket qua vao dest[][]. In an dang bang phai nam o main()!\n");
+            if (inHam && strstr(line, "printf(")) {
+                printf("FAILED Kien truc: Phat hien lenh 'printf' ben trong than ham lamMoMaTran!\n");
+                printf("--> YEU CAU: Ham chi ghi ket qua vao dest[][]. In an phai o main()!\n");
                 fclose(f);
                 return 1;
             }
@@ -25,56 +25,63 @@ int main() {
         fclose(f);
     }
 
-    // 2. Test chuẩn: Ma trận 2 hàng x 3 cột
+    // 2. Test chuẩn: Ma trận 3 x 3
     int src1[100][MAX_COLS] = {
-        {1, 2, 3},
-        {4, 5, 6}
+        {10, 20, 30},
+        {40, 50, 60},
+        {70, 80, 90}
     };
     int dest1[100][MAX_COLS] = {0};
-    int expected1[2][3] = {
-        {1, 4, 9},
-        {16, 25, 36}
+    int exp1[3][3] = {
+        {30, 35, 40},
+        {45, 50, 55},
+        {60, 65, 70}
     };
 
-    maTranBinhPhuong(src1, dest1, 2, 3);
+    lamMoMaTran(src1, dest1, 3, 3);
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            if (dest1[i][j] != expected1[i][j]) {
-                printf("FAILED Test 1: Tai dest[%d][%d] -> Expected: %d, Actual: %d\n",
-                       i, j, expected1[i][j], dest1[i][j]);
+            if (dest1[i][j] != exp1[i][j]) {
+                printf("FAILED Test 1 (3x3): Tai dest[%d][%d] -> Expected: %d, Actual: %d\n",
+                       i, j, exp1[i][j], dest1[i][j]);
                 return 1;
             }
         }
     }
 
-    // Kiểm tra ma trận nguồn src không bị thay đổi dữ liệu
-    if (src1[0][0] != 1 || src1[1][2] != 6) {
-        printf("FAILED Test 1: Ma tran goc src bi ghi de du lieu thay vi luu sang dest!\n");
+    // Kiểm tra ma trận gốc không bị ghi đè
+    if (src1[0][0] != 10 || src1[1][1] != 50 || src1[2][2] != 90) {
+        printf("FAILED Test 1: Ma tran goc src bi sua doi du lieu trong qua trinh tinh!\n");
         return 1;
     }
 
-    // 3. Test số âm và số 0: Ma trận 2 x 2
+    // 3. Test bẫy AI: Ma trận 2 x 2 (AI hay chia cố định cho 9 thay vì đếm số ô hợp lệ)
     int src2[100][MAX_COLS] = {
-        {-3, 0},
-        {5, -7}
+        {4, 8},
+        {12, 16}
     };
     int dest2[100][MAX_COLS] = {0};
-    int expected2[2][2] = {
-        {9, 0},
-        {25, 49}
-    };
-
-    maTranBinhPhuong(src2, dest2, 2, 2);
+    lamMoMaTran(src2, dest2, 2, 2);
 
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            if (dest2[i][j] != expected2[i][j]) {
-                printf("FAILED Test 2: Binh phuong so am/0 tai dest[%d][%d] -> Expected: %d, Actual: %d\n",
-                       i, j, expected2[i][j], dest2[i][j]);
+            if (dest2[i][j] != 10) {
+                printf("FAILED Test 2 (Bay AI bien 2x2): Tai dest[%d][%d] -> Expected: 10, Actual: %d\n",
+                       i, j, dest2[i][j]);
+                printf("--> NGUYEN NHAN PHO BIEN: AI chia co dinh cho 9 hoac quen dem so luong o lan can thuc te!\n");
                 return 1;
             }
         }
+    }
+
+    // 4. Test ma trận 1 x 1
+    int src3[100][MAX_COLS] = {{100}};
+    int dest3[100][MAX_COLS] = {{0}};
+    lamMoMaTran(src3, dest3, 1, 1);
+    if (dest3[0][0] != 100) {
+        printf("FAILED Test 3 (1x1): -> Expected: 100, Actual: %d\n", dest3[0][0]);
+        return 1;
     }
 
     printf(">>> BAI 3: PASS 100%% TEST CASES!\n");
