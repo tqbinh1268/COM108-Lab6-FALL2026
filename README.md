@@ -74,13 +74,14 @@ Ngay sau khi push, kiểm tra tab **Actions** trên GitHub cá nhân:
   * Không thay đổi tên hàm, kiểu dữ liệu trả về và danh sách tham số trong các file mẫu (`src/bai1.c` đến `bai4.c`).
   * **Cấm biến toàn cục (`global variables`):** Toàn bộ dữ liệu trao đổi giữa các hàm phải qua tham số hoặc `return`.
   * **Tách bạch tính toán và hiển thị:** Mọi thao tác nhập xuất dữ liệu (`printf`, `scanf`) thực hiện tại `main()`. Hàm tính toán logic tuyệt đối không chứa lệnh `printf`.
+  * **Chống gian lận (Anti-Tampering):** Sinh viên chỉ được commit sửa đổi các file trong thư mục `src/` và file `LOGBOOK.md`. **Mọi hành vi tự ý sửa đổi file trong `.github/workflows/` (nhằm tăng quota) hoặc sửa đổi file trong `tests/` đều bị coi là gian lận học thuật và nhận điểm 0 toàn bộ bài Lab.**
 
 > [!WARNING]
-> **Hạn ngạch đẩy bài (Luật 12-Push):** Toàn bộ bài Lab 6 được cấp tối đa **12 lần push** (trung bình 3 lần / bài).
+> **Hạn ngạch đẩy bài (Luật 13-Push):** Toàn bộ bài Lab 6 được cấp tối đa **13 lần push**.
 > * **Bài 1:** Tối đa 3 lần push.
 > * **Bài 2:** Tối đa 3 lần push.
 > * **Bài 3:** Tối đa 3 lần push.
-> * **Bài 4:** Tối đa 3 lần push.
+> * **Bài 4:** Tối đa 4 lần push (dành thêm 1 lần do thuật toán quét lân cận phức tạp hơn).
 > * *Hệ thống sẽ tự động khóa kiểm tra nếu vượt quá hạn ngạch.*
 
 ---

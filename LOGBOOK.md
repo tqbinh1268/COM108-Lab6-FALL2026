@@ -68,6 +68,10 @@
 - Trạng thái: 
 - Lỗi / Cách sửa: 
 
-### Lần 12: Bài 4 (Dự phòng)
+### Lần 12: Bài 4
+- Trạng thái: 
+- Lỗi / Cách sửa: 
+
+### Lần 13: Bài 4 (Dự phòng)
 - Trạng thái: 
 - Lỗi / Cách sửa: 

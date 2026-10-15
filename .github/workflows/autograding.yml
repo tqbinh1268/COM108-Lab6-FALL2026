@@ -14,13 +14,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 2. Kiểm tra hạn ngạch 12-Push (Quota Enforcement)
+      - name: 2. Kiểm tra hạn ngạch 13-Push (Quota Enforcement)
         run: |
           COMMIT_COUNT=$(git rev-list --count HEAD)
           echo "Tổng số commit hiện tại: $COMMIT_COUNT"
-          # Template mặc định có khoảng 1-2 commit ban đầu
-          if [ "$COMMIT_COUNT" -gt 15 ]; then
-            echo "::error::QUOTA EXCEEDED! Bạn đã push vượt quá hạn ngạch quy định cho Lab 6 (tối đa 12 lần push). Hệ thống đã khóa tự động kiểm thử. Vui lòng liên hệ giảng viên!"
+          # Template mặc định có khoảng 3 commit ban đầu, sinh viên được tối đa 13 commit
+          if [ "$COMMIT_COUNT" -gt 16 ]; then
+            echo "::error::QUOTA EXCEEDED! Bạn đã push vượt quá hạn ngạch quy định cho Lab 6 (tối đa 13 lần push: B1-3, B2-3, B3-3, B4-4). Hệ thống đã khóa tự động kiểm thử. Vui lòng liên hệ giảng viên!"
             exit 1
           fi
 
