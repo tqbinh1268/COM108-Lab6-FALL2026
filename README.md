@@ -23,28 +23,30 @@ cd COM108-Lab6-<MaSinhVien>
 ### 2. Quy trình làm từng bài & Đẩy lên GitHub (Push)
 
 > [!TIP]
-> **Quy trình chuẩn:** Hoàn thiện Bài 1 $\rightarrow$ Test cục bộ $\rightarrow$ Push & Đọc CI/CD $\rightarrow$ Ghi log $\rightarrow$ Xanh mới chuyển sang Bài tiếp theo.
+> **Quy trình chuẩn:** Hoàn thiện code → Test cục bộ → Push & Xem kết quả CI/CD → Xanh mới chuyển sang Bài tiếp theo (Nếu Đỏ: xem chi tiết lỗi, cập nhật Logbook và sửa code).
 
-#### Bước 1: Code, Kiểm thử Cục bộ và Ghi Log
+#### Bước 1: Code và Tự Kiểm Thử Cục Bộ
 1. Viết code hoàn thiện các hàm trong file `.c` (nằm trong thư mục `src/`).
-2. Tự kiểm thử nhanh trên máy cá nhân:
+2. Tự chạy kiểm thử nhanh trên máy cá nhân trước khi nộp:
    ```bash
-   # Kiểm thử Bài 1
+   # Ví dụ: Tự kiểm thử Bài 1
    gcc -Wall tests/test_bai1.c -o run_test1 -lm && ./run_test1
    ```
-3. Ghi nhật ký vào `LOGBOOK.md` trước khi push.
-4. Chạy lệnh nộp bài:
+3. Cập nhật ghi chú vào `LOGBOOK.md`.
+4. Chạy lệnh nộp bài lên GitHub:
 ```bash
 git add src LOGBOOK.md
 git commit -m "Nop bai 1: Hoan thanh Moving Average Filter"
 git push origin main
 ```
 
-#### Bước 2: Đọc bảng tổng hợp tự động trên GitHub Actions (Dashboard)
-Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn $\rightarrow$ bấm vào lần chạy kiểm thử mới nhất:
-* 📊 **Bảng Tổng Kết Tự Động (GitHub Step Summary):** Hiển thị ngay ở trang chủ lần chạy, tổng hợp tình trạng của cả 4 bài tập:
-  * ✅ **PASS:** Bài làm đã vượt qua 100% test case $\rightarrow$ Ghi log "Xanh" $\rightarrow$ Chuyển sang bài tiếp theo.
-  * ❌ **FAILED:** Bấm vào mục **"Chi tiết kiểm thử Bài X"** ngay trên bảng để đọc nguyên nhân lỗi $\rightarrow$ Ghi lỗi vào `LOGBOOK.md` $\rightarrow$ Sửa code trên máy rồi push lại.
+#### Bước 2: Xem Bảng Kết Quả Tự Động (GitHub Step Summary)
+Ngay sau khi push, truy cập vào tab **Actions** trên repo GitHub của bạn $\rightarrow$ bấm vào lần chạy kiểm thử mới nhất để xem bảng điều khiển:
+* ✅ **Nếu bài làm PASS (Xanh):** Bạn đã vượt qua 100% test case bài này! Không cần push lại, hãy bắt tay làm ngay bài tiếp theo.
+* ❌ **Nếu bài làm FAILED (Đỏ):** 
+  1. Nhấp mở mục **"Chi tiết kiểm thử Bài X"** ngay trên bảng để đọc nguyên nhân lỗi.
+  2. Ghi nhận lỗi và giải pháp vào `LOGBOOK.md`.
+  3. Sửa code trong `src/` trên máy tính rồi push lại (Lần 2).
 * 📈 **Tiến độ hạn ngạch:** Bảng tổng kết hiển thị trực tiếp số lượt commit đã sử dụng (tối đa 13 lượt).
 
 ---
