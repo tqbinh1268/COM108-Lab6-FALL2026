@@ -30,80 +30,140 @@ jobs:
             echo "::warning::Lưu ý: Commit này bạn chưa cập nhật file LOGBOOK.md! Hãy ghi lại quá trình sửa lỗi để giảng viên kiểm tra."
           fi
 
-      - name: 4. Chạy toàn bộ Test & Xuất Báo Cáo Tự Động (GitHub Step Summary)
+      - name: 4. Chạy kiểm thử lũy tiến theo bài & Xuất Dashboard (GitHub Step Summary)
         run: |
           COMMIT_COUNT=$(git rev-list --count HEAD)
+          ROOT_COMMIT=$(git rev-list --max-parents=0 HEAD 2>/dev/null | tail -n 1)
 
-          # --- CHẠY BÀI 1 ---
-          echo "==================== TEST BÀI 1 ===================="
-          if gcc -Wall tests/test_bai1.c -o run_test1 -lm; then
-            if ./run_test1 > test1.log 2>&1; then
-              cat test1.log
-              STATUS1="✅ PASS"
-              PASS1=1
+          # Hash SHA1 của file template gốc (để nhận diện bài chưa làm)
+          HASH1="766adb00d4bc6469d27ddedf5a13b43ebd91e307"
+          HASH2="e5db3fee2fb98b1f9514fb0ffca4ac9cdd1dbe09"
+          HASH3="d5f592ab88565338f34f62eea450c545f105683b"
+          HASH4="1d9e4317d973f01ee6aab4e8127b85a48854550f"
+
+          is_modified() {
+            local file=$1
+            local template_hash=$2
+            local current_hash=$(git hash-object "$file" 2>/dev/null || echo "")
+            if [ "$current_hash" = "$template_hash" ]; then
+              return 1 # Khớp hash gốc -> Chưa làm
+            fi
+            if [ -n "$ROOT_COMMIT" ] && git diff --quiet $ROOT_COMMIT HEAD -- "$file" 2>/dev/null; then
+              return 1 # Khớp commit khởi tạo -> Chưa làm
+            fi
+            return 0 # Đã làm
+          }
+
+          PASSED_COUNT=0
+          FAILED_COUNT=0
+          SKIPPED_COUNT=0
+
+          # --- BÀI 1 ---
+          if is_modified "src/bai1.c" "$HASH1"; then
+            echo "==================== TEST BÀI 1 ===================="
+            if gcc -Wall tests/test_bai1.c -o run_test1 -lm; then
+              if ./run_test1 > test1.log 2>&1; then
+                cat test1.log
+                STATUS1="✅ PASS"
+                PASS1=1
+                PASSED_COUNT=$((PASSED_COUNT + 1))
+              else
+                cat test1.log
+                STATUS1="❌ FAILED"
+                PASS1=0
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
             else
-              cat test1.log
-              STATUS1="❌ FAILED"
+              echo "Lỗi biên dịch Bài 1" > test1.log
+              STATUS1="❌ LỖI BIÊN DỊCH"
               PASS1=0
+              FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           else
-            echo "Lỗi biên dịch Bài 1" > test1.log
-            STATUS1="❌ LỖI BIÊN DỊCH"
-            PASS1=0
+            STATUS1="⏳ Chưa nộp"
+            PASS1=-1
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
           fi
 
-          # --- CHẠY BÀI 2 ---
-          echo "==================== TEST BÀI 2 ===================="
-          if gcc -Wall tests/test_bai2.c -o run_test2 -lm; then
-            if ./run_test2 > test2.log 2>&1; then
-              cat test2.log
-              STATUS2="✅ PASS"
-              PASS2=1
+          # --- BÀI 2 ---
+          if is_modified "src/bai2.c" "$HASH2"; then
+            echo "==================== TEST BÀI 2 ===================="
+            if gcc -Wall tests/test_bai2.c -o run_test2 -lm; then
+              if ./run_test2 > test2.log 2>&1; then
+                cat test2.log
+                STATUS2="✅ PASS"
+                PASS2=1
+                PASSED_COUNT=$((PASSED_COUNT + 1))
+              else
+                cat test2.log
+                STATUS2="❌ FAILED"
+                PASS2=0
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
             else
-              cat test2.log
-              STATUS2="❌ FAILED"
+              echo "Lỗi biên dịch Bài 2" > test2.log
+              STATUS2="❌ LỖI BIÊN DỊCH"
               PASS2=0
+              FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           else
-            echo "Lỗi biên dịch Bài 2" > test2.log
-            STATUS2="❌ LỖI BIÊN DỊCH"
-            PASS2=0
+            STATUS2="⏳ Chưa nộp"
+            PASS2=-1
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
           fi
 
-          # --- CHẠY BÀI 3 ---
-          echo "==================== TEST BÀI 3 ===================="
-          if gcc -Wall tests/test_bai3.c -o run_test3 -lm; then
-            if ./run_test3 > test3.log 2>&1; then
-              cat test3.log
-              STATUS3="✅ PASS"
-              PASS3=1
+          # --- BÀI 3 ---
+          if is_modified "src/bai3.c" "$HASH3"; then
+            echo "==================== TEST BÀI 3 ===================="
+            if gcc -Wall tests/test_bai3.c -o run_test3 -lm; then
+              if ./run_test3 > test3.log 2>&1; then
+                cat test3.log
+                STATUS3="✅ PASS"
+                PASS3=1
+                PASSED_COUNT=$((PASSED_COUNT + 1))
+              else
+                cat test3.log
+                STATUS3="❌ FAILED"
+                PASS3=0
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
             else
-              cat test3.log
-              STATUS3="❌ FAILED"
+              echo "Lỗi biên dịch Bài 3" > test3.log
+              STATUS3="❌ LỖI BIÊN DỊCH"
               PASS3=0
+              FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           else
-            echo "Lỗi biên dịch Bài 3" > test3.log
-            STATUS3="❌ LỖI BIÊN DỊCH"
-            PASS3=0
+            STATUS3="⏳ Chưa nộp"
+            PASS3=-1
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
           fi
 
-          # --- CHẠY BÀI 4 ---
-          echo "==================== TEST BÀI 4 ===================="
-          if gcc -Wall tests/test_bai4.c -o run_test4 -lm; then
-            if ./run_test4 > test4.log 2>&1; then
-              cat test4.log
-              STATUS4="✅ PASS"
-              PASS4=1
+          # --- BÀI 4 ---
+          if is_modified "src/bai4.c" "$HASH4"; then
+            echo "==================== TEST BÀI 4 ===================="
+            if gcc -Wall tests/test_bai4.c -o run_test4 -lm; then
+              if ./run_test4 > test4.log 2>&1; then
+                cat test4.log
+                STATUS4="✅ PASS"
+                PASS4=1
+                PASSED_COUNT=$((PASSED_COUNT + 1))
+              else
+                cat test4.log
+                STATUS4="❌ FAILED"
+                PASS4=0
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
             else
-              cat test4.log
-              STATUS4="❌ FAILED"
+              echo "Lỗi biên dịch Bài 4" > test4.log
+              STATUS4="❌ LỖI BIÊN DỊCH"
               PASS4=0
+              FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           else
-            echo "Lỗi biên dịch Bài 4" > test4.log
-            STATUS4="❌ LỖI BIÊN DỊCH"
-            PASS4=0
+            STATUS4="⏳ Chưa nộp"
+            PASS4=-1
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
           fi
 
           # --- TẠO BẢNG TỔNG HỢP GITHUB STEP SUMMARY ---
@@ -111,6 +171,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> **Người nộp bài:** \`${{ github.actor }}\` | **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "> **Tiến độ hạn ngạch:** \`$COMMIT_COUNT commit\` (Tối đa 13 lượt nộp)" >> $GITHUB_STEP_SUMMARY
+          echo "> **Tiến độ hoàn thành:** **$PASSED_COUNT / 4 bài**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Bài tập | Nội dung chuyên môn | Trạng thái |" >> $GITHUB_STEP_SUMMARY
           echo "| :---: | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
@@ -121,8 +182,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Nếu có bài fail, trích xuất log chi tiết vào khối thu gọn
-          if [ $PASS1 -eq 0 ] || [ $PASS2 -eq 0 ] || [ $PASS3 -eq 0 ] || [ $PASS4 -eq 0 ]; then
-            echo "### 🔍 Chi Tiết Phản Hồi Từ Test Runner (Nhấp để mở xem)" >> $GITHUB_STEP_SUMMARY
+          if [ $FAILED_COUNT -gt 0 ]; then
+            echo "### 🔍 Chi Tiết Lỗi Cần Sửa (Nhấp để mở xem)" >> $GITHUB_STEP_SUMMARY
             if [ $PASS1 -eq 0 ]; then
               echo "<details><summary>❌ <b>Chi tiết kiểm thử Bài 1</b></summary>" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
@@ -156,8 +217,14 @@ jobs:
               echo "</details>" >> $GITHUB_STEP_SUMMARY
             fi
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "::error::Một hoặc nhiều bài tập chưa vượt qua test case. Hãy xem Bảng tổng kết để sửa code!"
+            echo "::error::Có $FAILED_COUNT bài chưa đạt test case. Hãy kiểm tra chi tiết lỗi bên trên để sửa code!"
             exit 1
+          fi
+
+          if [ $PASSED_COUNT -eq 4 ]; then
+            echo "### 🎉 XUẤT SẮC! BẠN ĐÃ HOÀN THÀNH 100% TẤT CẢ CÁC BÀI LAB 6!" >> $GITHUB_STEP_SUMMARY
+          elif [ $PASSED_COUNT -gt 0 ]; then
+            echo "### 🌟 TIẾN ĐỘ TỐT! Các bài đã nộp đều đạt 100% test case (Trạng thái XANH ✅). Hãy tiếp tục hoàn thành các bài tiếp theo!" >> $GITHUB_STEP_SUMMARY
           else
-            echo "### 🎉 CHÚC MỪNG! BẠN ĐÃ VƯỢT QUA 100% CÁC BÀI TEST LAB 6!" >> $GITHUB_STEP_SUMMARY
+            echo "### ℹ️ Bạn chưa thay đổi code bài tập nào trong thư mục src/." >> $GITHUB_STEP_SUMMARY
           fi
