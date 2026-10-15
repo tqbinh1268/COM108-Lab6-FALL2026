@@ -1,0 +1,55 @@
+name: Autograding Test Runner - COM108
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  grade-lab6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 2. Kiểm tra hạn ngạch 12-Push (Quota Enforcement)
+        run: |
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          echo "Tổng số commit hiện tại: $COMMIT_COUNT"
+          # Template mặc định có khoảng 1-2 commit ban đầu
+          if [ "$COMMIT_COUNT" -gt 15 ]; then
+            echo "::error::QUOTA EXCEEDED! Bạn đã push vượt quá hạn ngạch quy định cho Lab 6 (tối đa 12 lần push). Hệ thống đã khóa tự động kiểm thử. Vui lòng liên hệ giảng viên!"
+            exit 1
+          fi
+
+      - name: 3. Kiểm tra tính minh bạch (Kiểm tra cập nhật LOGBOOK.md)
+        run: |
+          if ! git diff --name-only HEAD~1 HEAD | grep -q "LOGBOOK.md"; then
+            echo "::warning::Lưu ý: Commit này bạn chưa cập nhật file LOGBOOK.md! Hãy ghi lại quá trình sửa lỗi để giảng viên kiểm tra."
+          fi
+
+      - name: 4. Chạy Unit Test Bài 1 (Giám sát nhiệt độ cảm biến - Max/Min mảng 1 chiều)
+        run: |
+          echo "==================== TEST BÀI 1 ===================="
+          gcc -Wall tests/test_bai1.c -o run_test1 -lm
+          ./run_test1
+
+      - name: 5. Chạy Unit Test Bài 2 (Bảng xếp hạng hiệu suất - Sắp xếp giảm dần)
+        run: |
+          echo "==================== TEST BÀI 2 ===================="
+          gcc -Wall tests/test_bai2.c -o run_test2 -lm
+          ./run_test2
+
+      - name: 6. Chạy Unit Test Bài 3 (Khuếch đại điểm ảnh - Ma trận bình phương)
+        run: |
+          echo "==================== TEST BÀI 3 ===================="
+          gcc -Wall tests/test_bai3.c -o run_test3 -lm
+          ./run_test3
+
+      - name: 7. Chạy Unit Test Bài 4 (Rà soát tọa độ bất thường - Lọc số lẻ ma trận)
+        run: |
+          echo "==================== TEST BÀI 4 ===================="
+          gcc -Wall tests/test_bai4.c -o run_test4 -lm
+          ./run_test4
